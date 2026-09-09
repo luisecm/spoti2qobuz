@@ -1,0 +1,4 @@
+requests
+python-dotenv>=1.0
+rapidfuzz>=3.6
+git+https://github.com/fdenivac/python-qobuz
