@@ -1,4 +1,4 @@
-# spotify-to-qobuz sync
+# Spotify 2 Qobuz Sync!
 
 Mirrors a public Spotify playlist into a single Qobuz playlist. Run it
 manually whenever you want to refresh — it always updates the *same*
