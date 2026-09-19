@@ -1,0 +1,35 @@
+name: Sync Spotify playlist to Qobuz
+
+on:
+  schedule:
+    # 21:00 UTC ~= 5pm US Eastern during EDT (roughly Mar-Nov, which
+    # covers most of the year, incl. now). During EST (Nov-Mar) this
+    # runs ~4pm ET instead of 5pm.
+    - cron: '0 21 * * 2'
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Write credentials and cached Qobuz session
+        run: |
+          cat > .env <<EOF
+          SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_PLAYLIST_ID=${{ secrets.SPOTIFY_PLAYLIST_ID }}
+          QOBUZ_PLAYLIST_NAME=${{ secrets.QOBUZ_PLAYLIST_NAME }}
+          EOF
+          printf '%s' '${{ secrets.QOBUZ_STATE_JSON }}' > state.json
+
+      - name: Run sync
+        run: python sync.py
